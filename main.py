@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import FastAPI
 import uvicorn
 from fastapi.routing import APIRouter
@@ -9,7 +11,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import re
 from fastapi import HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 from pydantic import EmailStr
 from pydantic import validator
 
@@ -43,6 +45,9 @@ class User(Base):
     number = Column(String, nullable=False, unique=True)
     email = Column(String, nullable=False, unique=True)
     subscribed = Column(Boolean(), nullable=False)
+
+    #Переменная, которая показывает, рабочий акк или удаленный
+    is_working = Column(Boolean(), nullable=False)
 
     # Связь с таблицей orders
     orders = relationship("Order", back_populates="user")
@@ -90,12 +95,15 @@ class UserDAL:
         self.db_session = db_session
 
     async def create_user(
-        self, name: str, surname: str, email: str
+        self, name: str, surname: str, number: str, email: str, subscribed: Boolean, is_working: Boolean
     ) -> User:
         new_user = User(
             name=name,
             surname=surname,
+            number=number,
             email=email,
+            subscribed=subscribed,
+            is_working=is_working,
         )
         self.db_session.add(new_user)
         await self.db_session.flush()
@@ -120,14 +128,51 @@ class ShowUser(TunedModel):
     user_id: uuid.UUID
     name: str
     surname: str
+    number: str
     email: EmailStr
-    is_active: bool
+    subscribed: str
+    is_working: bool
 
 
 class UserCreate(BaseModel):
     name: str
     surname: str
+    number: str
     email: EmailStr
+    subscribed: str
+    is_working: bool
+
+    @validator("name")
+    def validate_name(cls, value):
+        if not LETTER_MATCH_PATTERN.match(value):
+            raise HTTPException(
+                status_code=422, detail="Name should contains only letters"
+            )
+        return value
+
+    @validator("surname")
+    def validate_surname(cls, value):
+        if not LETTER_MATCH_PATTERN.match(value):
+            raise HTTPException(
+                status_code=422, detail="Surname should contains only letters"
+            )
+        return value
+
+class DeleteUserResponse(BaseModel):
+    deleted_user_id: uuid.UUID
+
+
+class UpdatedUserResponse(BaseModel):
+    updated_user_id: uuid.UUID
+
+
+class UpdateUserRequest(BaseModel):
+    name: Optional[constr(min_length=1)]
+    surname: Optional[constr(min_length=1)]
+    number: str
+    email: Optional[EmailStr]
+    subscribed: str
+    is_working: bool
 
     @validator("name")
     def validate_name(cls, value):
@@ -163,14 +208,19 @@ async def _create_new_user(body: UserCreate) -> ShowUser:
             user = await user_dal.create_user(
                 name=body.name,
                 surname=body.surname,
+                number=body.number,
                 email=body.email,
+                subscribed=body.subscribed,
+                is_working=body.is_working
             )
             return ShowUser(
                 user_id=user.user_id,
                 name=user.name,
                 surname=user.surname,
+                number=user.number,
                 email=user.email,
-                is_active=user.is_active,
+                subscribed=user.subscribed,
+                is_working=user.is_working,
             )
 
 

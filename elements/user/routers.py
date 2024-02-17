@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from typing import List, Union
+from typing import Union
 
 from elements.user.DAL import UserDAL
 from elements.user.schemas import ShowUser as ShowUserSchema, UserCreate as UserCreateSchema, \

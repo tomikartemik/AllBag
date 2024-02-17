@@ -59,55 +59,9 @@ class Order(Base):
     user_id = Column(UUID, ForeignKey('users.user_id'))
     user = relationship("User", back_populates="orders")
 
-
-###########################################################
-# BLOCK FOR INTERACTION WITH DATABASE IN BUSINESS CONTEXT #
-###########################################################
-
-
-#########################
-# BLOCK WITH API MODELS #
-#########################
-
-#########################
-# BLOCK WITH API ROUTES #
-#########################
-
-# create instance of the app
-app = FastAPI(title="luchanos-oxford-university")
-
-user_router = APIRouter()
-
-
-async def _create_new_user(body: UserCreate) -> ShowUser:
-    async with async_session() as session:
-        async with session.begin():
-            user_dal = UserDAL(session)
-            user = await user_dal.create_user(
-                name=body.name,
-                surname=body.surname,
-                email=body.email,
-            )
-            return ShowUser(
-                user_id=user.user_id,
-                name=user.name,
-                surname=user.surname,
-                email=user.email,
-                is_active=user.is_active,
-            )
-
-
-@user_router.post("/", response_model=ShowUser)
-async def create_user(body: UserCreate) -> ShowUser:
-    return await _create_new_user(body)
-
-
-# create the instance for the routes
-main_api_router = APIRouter()
-
-# set routes to the app instance
-main_api_router.include_router(user_router, prefix="/user", tags=["user"])
-app.include_router(main_api_router)
+app = FastAPI(
+    title="All BAG"
+)
 
 if __name__ == "__main__":
     # run app on the host and port

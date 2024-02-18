@@ -6,13 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from elements.user.models import User as UserModel
 
-###########################################################
-# BLOCK FOR INTERACTION WITH DATABASE IN BUSINESS CONTEXT #
-###########################################################
-
 
 class UserDAL:
-    """Data Access Layer for operating user info"""
+
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
@@ -21,15 +17,13 @@ class UserDAL:
             name: str,
             surname: str,
             number: str,
-            email: str,
-            is_active: bool = True
+            email: str
     ) -> UserModel:
         new_user = UserModel(
             name=name,
             surname=surname,
             number=number,
-            email=email,
-            is_active=is_active
+            email=email
 
         )
         self.db_session.add(new_user)
@@ -37,9 +31,8 @@ class UserDAL:
         return new_user
 
     async def delete_user(self, user_id: UUID) -> Union[UUID, None]:
-        query = update(UserModel).\
-            where(and_(UserModel.user_id == user_id, UserModel.is_active == True)).\
-            values(is_working=False).returning(UserModel.user_id)
+        query = update(UserModel). \
+            where(and_(UserModel.user_id == user_id)).returning(UserModel.user_id)
         res = await self.db_session.execute(query)
         deleted_user_id_row = res.fetchone()
         if deleted_user_id_row is not None:
@@ -54,7 +47,7 @@ class UserDAL:
 
     async def update_user(self, user_id: UUID, **kwargs) -> Union[UUID, None]:
         query = update(UserModel). \
-            where(and_(UserModel.user_id == user_id, UserModel.is_active == True)). \
+            where(and_(UserModel.user_id == user_id)). \
             values(kwargs). \
             returning(UserModel.user_id)
         res = await self.db_session.execute(query)

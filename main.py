@@ -2,10 +2,14 @@ from fastapi import FastAPI
 import uvicorn
 from fastapi.routing import APIRouter
 from elements.user.routers import user_router
+from elements.product.routers import product_router
 
 app = FastAPI(title="All_BAG")
+
 main_router = APIRouter()
 main_router.include_router(user_router, prefix="/users", tags=["users"])
+main_router.include_router(product_router, prefix="/products", tags=["products"])
+
 app.include_router(main_router)
 
 if __name__ == "__main__":

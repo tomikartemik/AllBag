@@ -15,14 +15,12 @@ class ShowUser(BaseModel):
     surname: str
     number: str
     email: EmailStr
-    is_active: bool
 
 class UserCreate(BaseModel):
     name: str
     surname: str
     number: str
     email: EmailStr
-    is_active: bool
 
     @validator("name")
     def validate_name(cls, value):
@@ -53,7 +51,6 @@ class UpdateUserRequest(BaseModel):
     surname: Optional[constr(min_length=1)]
     number: str
     email: Optional[EmailStr]
-    is_active : bool
 
     @validator("name")
     def validate_name(cls, value):

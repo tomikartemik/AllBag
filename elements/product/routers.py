@@ -173,15 +173,27 @@ async def create_product(
             detail=f"Database error, {err}"
         )
 
-#TODO: update product
-
 @product_router.delete("", response_model=DeleteProductResponseSchema)
 async def delete_product(
         product_id: int,
         db: AsyncSession = Depends(get_async_session)
-    ) -> DeleteProductResponseSchema:
+    ) -> int | None:
     try:
         return await _delete_product(product_id, db)
+    except Exception as err:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Database error, {err}"
+        )
+
+@product_router.patch("", response_model=UpdatedProductResponseSchema)
+async def update_product(
+        product_id: int,
+        body: UpdateProductRequestSchema,
+        db: AsyncSession = Depends(get_async_session)
+    ) -> int | None:
+    try:
+        return await _update_product(product_id, body, db)
     except Exception as err:
         raise HTTPException(
             status_code=503,

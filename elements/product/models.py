@@ -15,7 +15,7 @@ class Product(Base):
     color: str = Column("color", String, nullable=True)
     size: str = Column("size", String, nullable=True)
     sex: str = Column("sex", String, nullable=True)
-    category_id: int = Column("category_id", Integer, ForeignKey(Category.id), nullable=False)
+    category_id: int = Column("category_id", Integer, ForeignKey(Category.id, ondelete="CASCADE"), nullable=False)
 
     # TODO: photo_link
     # photo_link: str = Column("photo_link", String, nullable=False)

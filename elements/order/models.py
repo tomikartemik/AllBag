@@ -5,10 +5,12 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 class Order(Base):
     __tablename__ = "order"
     id: int = Column("id", Integer, primary_key=True)
     created_at: DateTime = Column("created_at", DateTime, nullable=False)
-    status: String = Column("status", String)
+    status: str = Column("status", String)
+    payment_method: str = Column("payment_method", String, nullable=False)
 
     # products_id: List[int] = Column("products_id", Integer, ForeignKey("product."))

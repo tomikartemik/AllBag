@@ -6,8 +6,9 @@ from pydantic import BaseModel, constr
 from pydantic import EmailStr
 from pydantic import validator
 
+
 class ShowProduct(BaseModel):
-    product_id: uuid.UUID
+    id: int
     name: str
     description: str
     price: float
@@ -15,8 +16,11 @@ class ShowProduct(BaseModel):
     color: str
     size: str
     sex: str
-    # category_id: int
+    category: int
+    brand: int
+    # TODO: нужны все поля
     # photo_link: str
+
 
 class AddProduct(BaseModel):
     name: str
@@ -29,11 +33,14 @@ class AddProduct(BaseModel):
     # category_id: int
     # photo_link: str
 
+
 class DeleteProductResponse(BaseModel):
     deleted_product_id: int
 
+
 class UpdatedProductResponse(BaseModel):
     updated_product_id: int
+
 
 class UpdateProductRequest(BaseModel):
     name: Optional[constr(min_length=1)]

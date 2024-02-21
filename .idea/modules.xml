@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/allbag.iml" filepath="$PROJECT_DIR$/.idea/allbag.iml" />
+      <module fileurl="file://$USER_HOME$/Documents/work/future-apps-store-backend/.idea/future-apps-store-backend.iml" filepath="$USER_HOME$/Documents/work/future-apps-store-backend/.idea/future-apps-store-backend.iml" />
     </modules>
   </component>
 </project>

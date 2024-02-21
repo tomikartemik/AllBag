@@ -1,10 +1,9 @@
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 from elements.category.models import Category
-from elements.order.models import association_table, Order as OrderModel
+from elements.order.models import association_table
 
 Base = declarative_base()
-
 
 class Brand(Base):
     __tablename__ = 'brand'
@@ -21,16 +20,16 @@ class Product(Base):
     description: str = Column("description", String, nullable=False)
     price: float = Column("price", Float, nullable=False)
     remaining_amount: int = Column("remaining_amount", Integer, nullable=False)
-    brand_id: int = Column("brand_id", Integer, ForeignKey(Brand.Id))
+    brand_id: int = Column("brand_id", Integer, ForeignKey(Brand.id))
     color: str = Column("color", String, nullable=True)
     size: str = Column("size", String, nullable=True)
     sex: str = Column("sex", String, nullable=True)
     category_id: int = Column("category_id", Integer, ForeignKey(Category.id, ondelete="CASCADE"), nullable=False)
 
     orders = relationship(
-        OrderModel,
+        "order",
         secondary=association_table,
-        back_populates="products"
+        back_populates="product"
     )
 
 
